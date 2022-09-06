@@ -1,0 +1,15 @@
+{
+  "name": "zeebe-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "zeebe-node": "^8.0.1"
+  }
+}
