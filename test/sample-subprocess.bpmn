@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1fvy3tn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:process id="process" name="process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1crrefh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1crrefh" sourceRef="StartEvent_1" targetRef="subprocess" />
+    <bpmn:subProcess id="subprocess2">
+      <bpmn:incoming>Flow_1ck2ktc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wq0zud</bpmn:outgoing>
+      <bpmn:serviceTask id="Activity_1cium4c" name="Get weather report">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="get-weather-report2" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0lcc1nt</bpmn:incoming>
+        <bpmn:outgoing>Flow_0l7zxkj</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:exclusiveGateway id="Gateway_0f954aw" default="Flow_0oxhgba">
+        <bpmn:incoming>Flow_0l7zxkj</bpmn:incoming>
+        <bpmn:outgoing>Flow_0cmhino</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0oxhgba</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:serviceTask id="Activity_082j7tt" name="Take an umbrella">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="take-umbrella" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0cmhino</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_052xq7s" name="Leave the umbrella">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="leave-umbrella" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0oxhgba</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0l7zxkj" sourceRef="Activity_1cium4c" targetRef="Gateway_0f954aw" />
+      <bpmn:sequenceFlow id="Flow_0cmhino" name="Wet weather" sourceRef="Gateway_0f954aw" targetRef="Activity_082j7tt">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=(deleted_code = true)</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0oxhgba" name="Clear weather" sourceRef="Gateway_0f954aw" targetRef="Activity_052xq7s" />
+      <bpmn:startEvent id="Event_1f23wj1">
+        <bpmn:outgoing>Flow_0lcc1nt</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0lcc1nt" sourceRef="Event_1f23wj1" targetRef="Activity_1cium4c" />
+    </bpmn:subProcess>
+    <bpmn:endEvent id="Event_0pzs5xo">
+      <bpmn:incoming>Flow_1wq0zud</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1wq0zud" sourceRef="subprocess2" targetRef="Event_0pzs5xo" />
+    <bpmn:subProcess id="subprocess">
+      <bpmn:incoming>Flow_1crrefh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ck2ktc</bpmn:outgoing>
+      <bpmn:sequenceFlow id="SequenceFlow_0gv2m5m" sourceRef="ServiceTask_1aj1tsb" targetRef="ExclusiveGateway_0657ahr" />
+      <bpmn:sequenceFlow id="SequenceFlow_07dnrbz" name="Wet weather" sourceRef="ExclusiveGateway_0657ahr" targetRef="ServiceTask_0fkm6l0">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=(deleted_code = true)</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="SequenceFlow_0q8x1hd" name="Clear weather" sourceRef="ExclusiveGateway_0657ahr" targetRef="ServiceTask_1hjoz1r" />
+      <bpmn:sequenceFlow id="SequenceFlow_1ek4y62" sourceRef="Event_165wc83" targetRef="ServiceTask_1aj1tsb" />
+      <bpmn:startEvent id="Event_165wc83">
+        <bpmn:outgoing>SequenceFlow_1ek4y62</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="ServiceTask_1hjoz1r" name="Leave the umbrella">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="leave-umbrella" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>SequenceFlow_0q8x1hd</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ServiceTask_0fkm6l0" name="Take an umbrella">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="take-umbrella" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>SequenceFlow_07dnrbz</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:exclusiveGateway id="ExclusiveGateway_0657ahr" default="SequenceFlow_0q8x1hd">
+        <bpmn:incoming>SequenceFlow_0gv2m5m</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_07dnrbz</bpmn:outgoing>
+        <bpmn:outgoing>SequenceFlow_0q8x1hd</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:serviceTask id="ServiceTask_1aj1tsb" name="Get weather report">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="get-weather-report" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>SequenceFlow_1ek4y62</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0gv2m5m</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_1ck2ktc" sourceRef="subprocess" targetRef="subprocess2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process">
+      <bpmndi:BPMNEdge id="Flow_1wq0zud_di" bpmnElement="Flow_1wq0zud">
+        <di:waypoint x="1950" y="240" />
+        <di:waypoint x="2042" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1crrefh_di" bpmnElement="Flow_1crrefh">
+        <di:waypoint x="188" y="220" />
+        <di:waypoint x="280" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ck2ktc_di" bpmnElement="Flow_1ck2ktc">
+        <di:waypoint x="1040" y="270" />
+        <di:waypoint x="1200" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0pzs5xo_di" bpmnElement="Event_0pzs5xo">
+        <dc:Bounds x="2042" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dpbea0_di" bpmnElement="subprocess" isExpanded="true">
+        <dc:Bounds x="280" y="80" width="760" height="293" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ek4y62_di" bpmnElement="SequenceFlow_1ek4y62">
+        <di:waypoint x="418" y="220" />
+        <di:waypoint x="473" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0q8x1hd_di" bpmnElement="SequenceFlow_0q8x1hd">
+        <di:waypoint x="653" y="245" />
+        <di:waypoint x="653" y="313" />
+        <di:waypoint x="733" y="313" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="633" y="326" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07dnrbz_di" bpmnElement="SequenceFlow_07dnrbz">
+        <di:waypoint x="653" y="195" />
+        <di:waypoint x="653" y="143" />
+        <di:waypoint x="733" y="143" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="116" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gv2m5m_di" bpmnElement="SequenceFlow_0gv2m5m">
+        <di:waypoint x="573" y="220" />
+        <di:waypoint x="628" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1aj1tsb_di" bpmnElement="ServiceTask_1aj1tsb">
+        <dc:Bounds x="473" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0657ahr_di" bpmnElement="ExclusiveGateway_0657ahr" isMarkerVisible="true">
+        <dc:Bounds x="628" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0fkm6l0_di" bpmnElement="ServiceTask_0fkm6l0">
+        <dc:Bounds x="733" y="103" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1hjoz1r_di" bpmnElement="ServiceTask_1hjoz1r">
+        <dc:Bounds x="733" y="273" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1gx4i95" bpmnElement="Event_165wc83">
+        <dc:Bounds x="382" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p594za_di" bpmnElement="subprocess2" isExpanded="true">
+        <dc:Bounds x="1200" y="100" width="750" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1395t5g" bpmnElement="Flow_0lcc1nt">
+        <di:waypoint x="1337" y="260" />
+        <di:waypoint x="1390" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_0glt4fj" bpmnElement="Flow_0oxhgba">
+        <di:waypoint x="1572" y="285" />
+        <di:waypoint x="1572" y="353" />
+        <di:waypoint x="1652" y="353" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1552" y="366" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_15oc721" bpmnElement="Flow_0cmhino">
+        <di:waypoint x="1572" y="235" />
+        <di:waypoint x="1572" y="183" />
+        <di:waypoint x="1652" y="183" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1556" y="156" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_1aiu32s" bpmnElement="Flow_0l7zxkj">
+        <di:waypoint x="1490" y="260" />
+        <di:waypoint x="1547" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1m41ie0" bpmnElement="Gateway_0f954aw" isMarkerVisible="true">
+        <dc:Bounds x="1547" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1lm2ksx" bpmnElement="Activity_082j7tt">
+        <dc:Bounds x="1652" y="143" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1r9v719" bpmnElement="Activity_052xq7s">
+        <dc:Bounds x="1652" y="313" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0g9mu8w" bpmnElement="Event_1f23wj1">
+        <dc:Bounds x="1301" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0bdbg12" bpmnElement="Activity_1cium4c">
+        <dc:Bounds x="1390" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
